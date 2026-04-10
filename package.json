@@ -1,0 +1,28 @@
+{
+  "name": "abap19-mail-service",
+  "version": "1.0.0",
+  "description": "Email notification service for ABAP19 SAP Fiori Configuration Management System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14"
+  },
+  "keywords": [
+    "sap",
+    "fiori",
+    "email",
+    "notification",
+    "abap19"
+  ],
+  "author": "ABAP19 Team",
+  "license": "MIT"
+}

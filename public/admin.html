@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABAP19 Mail Service - Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #f4f6f8;
+      color: #32363a;
+      min-height: 100vh;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+    .header {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .header h1 { font-size: 22px; color: #0a6ed1; margin-bottom: 4px; }
+    .header p { color: #6a6d70; font-size: 13px; }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .card h2 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: #32363a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      background: #0a6ed1;
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: normal;
+    }
+    .badge.manager { background: #0a6ed1; }
+    .badge.user    { background: #107e3e; }
+    .badge.admin   { background: #e9730c; }
+    label { display: block; font-size: 13px; color: #6a6d70; margin-bottom: 6px; font-weight: 500; }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+      transition: border 0.15s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #0a6ed1;
+      box-shadow: 0 0 0 2px rgba(10,110,209,0.15);
+    }
+    .email-list { display: flex; flex-direction: column; gap: 8px; }
+    .email-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .email-row input { flex: 1; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: #0a6ed1;
+      color: #fff;
+    }
+    .btn:hover { background: #085caf; }
+    .btn-sm { padding: 6px 10px; font-size: 12px; }
+    .btn-outline {
+      background: #fff;
+      color: #0a6ed1;
+      border: 1px solid #0a6ed1;
+    }
+    .btn-outline:hover { background: #f0f6fc; }
+    .btn-danger { background: #bb0000; }
+    .btn-danger:hover { background: #8a0000; }
+    .btn-success { background: #107e3e; }
+    .btn-success:hover { background: #0b5f2d; }
+    .btn-ghost {
+      background: transparent;
+      color: #bb0000;
+      padding: 4px 8px;
+    }
+    .btn-ghost:hover { background: #fde7e7; }
+    .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert.success { background: #e8f5e9; color: #107e3e; border-left: 4px solid #107e3e; }
+    .alert.error   { background: #fde7e7; color: #bb0000; border-left: 4px solid #bb0000; }
+    .alert.info    { background: #e5f0fa; color: #0a6ed1; border-left: 4px solid #0a6ed1; }
+    .login-box {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 32px;
+    }
+    .login-box h1 { text-align: center; margin-bottom: 24px; color: #0a6ed1; }
+    .login-box input { margin-bottom: 12px; }
+    .login-box .btn { width: 100%; justify-content: center; }
+    .hidden { display: none !important; }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: #6a6d70; }
+    .info-row .value { font-weight: 500; color: #32363a; }
+    .event-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .event-chip {
+      padding: 6px 12px;
+      background: #f4f6f8;
+      border-radius: 16px;
+      font-size: 12px;
+      color: #32363a;
+    }
+    .test-section { display: flex; gap: 10px; align-items: flex-end; }
+    .test-section select {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+    }
+    .footer {
+      text-align: center;
+      color: #6a6d70;
+      font-size: 12px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login screen -->
+  <div id="loginScreen" class="container">
+    <div class="card login-box">
+      <h1>🔒 ABAP19 Mail Admin</h1>
+      <div id="loginAlert" class="alert"></div>
+      <label for="password">Admin Password</label>
+      <input type="password" id="password" placeholder="Nhập mật khẩu admin..." onkeydown="if(event.key==='Enter')login()">
+      <button class="btn" onclick="login()" style="width:100%; justify-content:center; margin-top:12px;">
+        Đăng nhập
+      </button>
+    </div>
+  </div>
+
+  <!-- Main screen -->
+  <div id="mainScreen" class="container hidden">
+    <div class="header">
+      <h1>📧 ABAP19 Mail Service</h1>
+      <p>Quản lý danh sách email nhận thông báo từ hệ thống SAP Fiori Configuration Management</p>
+    </div>
+
+    <div id="mainAlert" class="alert"></div>
+
+    <!-- Service info -->
+    <div class="card">
+      <h2>ℹ️ Thông tin dịch vụ</h2>
+      <div class="info-row">
+        <span class="label">Gmail gửi từ</span>
+        <span class="value" id="gmailUser">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Trạng thái</span>
+        <span class="value" style="color:#107e3e">● Online</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Sự kiện hỗ trợ</span>
+        <span class="value">6 events</span>
+      </div>
+      <div class="event-list">
+        <span class="event-chip">📨 SUBMITTED → Manager</span>
+        <span class="event-chip">✅ APPROVED → Key User</span>
+        <span class="event-chip">❌ REJECTED → Key User</span>
+        <span class="event-chip">🚀 PROMOTED → Key User + Manager</span>
+        <span class="event-chip">↩️ ROLLED_BACK → Key User + Manager</span>
+        <span class="event-chip">⚡ ACTIVE → IT Admin</span>
+      </div>
+    </div>
+
+    <!-- Manager emails -->
+    <div class="card">
+      <h2>👔 Manager <span class="badge manager">Nhận: SUBMITTED, PROMOTED, ROLLED_BACK</span></h2>
+      <div id="managerList" class="email-list"></div>
+      <button class="btn btn-outline btn-sm" onclick="addEmail('MANAGER')" style="margin-top:10px;">+ Thêm email</button>
+    </div>
+
+    <!-- Key User emails -->
+    <div class="card">
+      <h2>👤 Key User <span class="badge user">Nhận: APPROVED, REJECTED, PROMOTED, ROLLED_BACK</span></h2>
+      <div id="keyUserList" class="email-list"></div>
+      <button class="btn btn-outline btn-sm" onclick="addEmail('KEY_USER')" style="margin-top:10px;">+ Thêm email</button>
+    </div>
+
+    <!-- IT Admin emails -->
+    <div class="card">
+      <h2>🛠️ IT Admin <span class="badge admin">Nhận: ACTIVE</span></h2>
+      <div id="itAdminList" class="email-list"></div>
+      <button class="btn btn-outline btn-sm" onclick="addEmail('IT_ADMIN')" style="margin-top:10px;">+ Thêm email</button>
+    </div>
+
+    <!-- Save -->
+    <div class="card">
+      <div class="actions">
+        <button class="btn btn-outline" onclick="loadConfig()">↻ Tải lại</button>
+        <button class="btn btn-success" onclick="saveConfig()">💾 Lưu thay đổi</button>
+      </div>
+    </div>
+
+    <!-- Test email -->
+    <div class="card">
+      <h2>🧪 Gửi email thử nghiệm</h2>
+      <p style="color:#6a6d70; font-size:13px; margin-bottom:12px;">
+        Chọn loại sự kiện để gửi email test tới các recipients tương ứng.
+      </p>
+      <div class="test-section">
+        <div style="flex:1">
+          <label for="testEvent">Loại sự kiện</label>
+          <select id="testEvent">
+            <option value="SUBMITTED">SUBMITTED (Manager)</option>
+            <option value="APPROVED">APPROVED (Key User)</option>
+            <option value="REJECTED">REJECTED (Key User)</option>
+            <option value="PROMOTED">PROMOTED (Key User + Manager)</option>
+            <option value="ROLLED_BACK">ROLLED_BACK (Key User + Manager)</option>
+            <option value="ACTIVE">ACTIVE (IT Admin)</option>
+          </select>
+        </div>
+        <button class="btn" onclick="testSend()">📤 Gửi thử</button>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <div class="card">
+      <div class="actions">
+        <button class="btn btn-danger" onclick="logout()">Đăng xuất</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      ABAP19 Mail Service v1.0 • SAP Fiori Configuration Management
+    </div>
+  </div>
+
+  <script>
+    var token = sessionStorage.getItem('adminToken') || '';
+    var config = { MANAGER: [], KEY_USER: [], IT_ADMIN: [] };
+
+    // Init
+    if (token) {
+      showMain();
+      loadConfig();
+    } else {
+      document.getElementById('password').focus();
+    }
+
+    function showAlert(id, type, msg) {
+      var el = document.getElementById(id);
+      el.className = 'alert show ' + type;
+      el.textContent = msg;
+      setTimeout(function() { el.className = 'alert'; }, 5000);
+    }
+
+    function login() {
+      var pwd = document.getElementById('password').value;
+      if (!pwd) return;
+      fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd })
+      })
+      .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+      .then(function(res) {
+        if (res.ok && res.data.token) {
+          token = res.data.token;
+          sessionStorage.setItem('adminToken', token);
+          showMain();
+          loadConfig();
+        } else {
+          showAlert('loginAlert', 'error', res.data.error || 'Đăng nhập thất bại');
+        }
+      })
+      .catch(function(e) {
+        showAlert('loginAlert', 'error', 'Lỗi kết nối: ' + e.message);
+      });
+    }
+
+    function logout() {
+      fetch('/api/admin/logout', {
+        method: 'POST',
+        headers: { 'x-admin-token': token }
+      }).finally(function() {
+        sessionStorage.removeItem('adminToken');
+        token = '';
+        document.getElementById('mainScreen').classList.add('hidden');
+        document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('password').value = '';
+      });
+    }
+
+    function showMain() {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainScreen').classList.remove('hidden');
+    }
+
+    function loadConfig() {
+      fetch('/api/admin/config', { headers: { 'x-admin-token': token } })
+        .then(function(r) {
+          if (r.status === 401) {
+            sessionStorage.removeItem('adminToken');
+            location.reload();
+            return;
+          }
+          return r.json();
+        })
+        .then(function(data) {
+          if (!data) return;
+          config = data.recipients || { MANAGER: [], KEY_USER: [], IT_ADMIN: [] };
+          document.getElementById('gmailUser').textContent = data.gmailUser || '(chưa cấu hình)';
+          renderList('MANAGER', 'managerList');
+          renderList('KEY_USER', 'keyUserList');
+          renderList('IT_ADMIN', 'itAdminList');
+        })
+        .catch(function(e) {
+          showAlert('mainAlert', 'error', 'Không tải được cấu hình: ' + e.message);
+        });
+    }
+
+    function renderList(role, containerId) {
+      var container = document.getElementById(containerId);
+      container.innerHTML = '';
+      var list = config[role] || [];
+      if (list.length === 0) {
+        container.innerHTML = '<div style="color:#6a6d70; font-size:13px; font-style:italic;">Chưa có email nào</div>';
+        return;
+      }
+      list.forEach(function(email, idx) {
+        var row = document.createElement('div');
+        row.className = 'email-row';
+        row.innerHTML =
+          '<input type="email" value="' + escapeHtml(email) + '" ' +
+          'onchange="updateEmail(\'' + role + '\', ' + idx + ', this.value)" ' +
+          'placeholder="email@example.com">' +
+          '<button class="btn btn-ghost btn-sm" onclick="removeEmail(\'' + role + '\', ' + idx + ')">✕ Xóa</button>';
+        container.appendChild(row);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function(c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function addEmail(role) {
+      if (!config[role]) config[role] = [];
+      config[role].push('');
+      renderList(role, role === 'MANAGER' ? 'managerList' : role === 'KEY_USER' ? 'keyUserList' : 'itAdminList');
+    }
+
+    function updateEmail(role, idx, value) {
+      config[role][idx] = value.trim();
+    }
+
+    function removeEmail(role, idx) {
+      config[role].splice(idx, 1);
+      renderList(role, role === 'MANAGER' ? 'managerList' : role === 'KEY_USER' ? 'keyUserList' : 'itAdminList');
+    }
+
+    function saveConfig() {
+      // Clean empty
+      var clean = {};
+      ['MANAGER', 'KEY_USER', 'IT_ADMIN'].forEach(function(k) {
+        clean[k] = (config[k] || []).map(function(s) { return s.trim(); }).filter(Boolean);
+      });
+      fetch('/api/admin/config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': token
+        },
+        body: JSON.stringify(clean)
+      })
+      .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+      .then(function(res) {
+        if (res.ok) {
+          showAlert('mainAlert', 'success', '✓ Đã lưu cấu hình thành công!');
+          config = res.data.recipients;
+          loadConfig();
+        } else {
+          showAlert('mainAlert', 'error', res.data.error || 'Lưu thất bại');
+        }
+      })
+      .catch(function(e) {
+        showAlert('mainAlert', 'error', 'Lỗi: ' + e.message);
+      });
+    }
+
+    function testSend() {
+      var event = document.getElementById('testEvent').value;
+      showAlert('mainAlert', 'info', 'Đang gửi email test...');
+      fetch('/api/admin/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': token
+        },
+        body: JSON.stringify({ event: event })
+      })
+      .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+      .then(function(res) {
+        if (res.ok) {
+          showAlert('mainAlert', 'success',
+            '✓ Đã gửi test email tới: ' + (res.data.recipients || []).join(', '));
+        } else {
+          showAlert('mainAlert', 'error', res.data.error || 'Gửi thất bại');
+        }
+      })
+      .catch(function(e) {
+        showAlert('mainAlert', 'error', 'Lỗi: ' + e.message);
+      });
+    }
+  </script>
+</body>
+</html>
