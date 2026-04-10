@@ -4,264 +4,809 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ABAP19 Mail Service - Admin</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #f5f7fb;
+      --surface:      #ffffff;
+      --surface-2:    #f8fafc;
+      --border:       #e4e8ef;
+      --border-hover: #c8d3e0;
+      --text:         #0f172a;
+      --text-muted:   #64748b;
+      --primary:      #2563eb;
+      --primary-h:    #1d4ed8;
+      --primary-bg:   #eff6ff;
+      --success:      #16a34a;
+      --success-bg:   #f0fdf4;
+      --danger:       #dc2626;
+      --danger-bg:    #fef2f2;
+      --warning:      #d97706;
+      --warning-bg:   #fffbeb;
+      --purple:       #7c3aed;
+      --purple-bg:    #f5f3ff;
+      --shadow-sm:    0 1px 2px rgba(15,23,42,0.04), 0 1px 1px rgba(15,23,42,0.02);
+      --shadow:       0 1px 3px rgba(15,23,42,0.06), 0 4px 12px rgba(15,23,42,0.04);
+      --shadow-lg:    0 10px 30px rgba(15,23,42,0.10);
+      --radius:       12px;
+      --radius-sm:    8px;
+      --radius-lg:    16px;
+      --transition:   200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: #f4f6f8;
-      color: #32363a;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(180deg, #f5f7fb 0%, #eef2f8 100%);
+      color: var(--text);
       min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
-    .header {
-      background: #fff;
-      border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+
+    /* ===== Layout ===== */
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
     }
-    .header h1 { font-size: 22px; color: #0a6ed1; margin-bottom: 4px; }
-    .header p { color: #6a6d70; font-size: 13px; }
+
+    /* ===== Header ===== */
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 24px 28px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      animation: slideDown 400ms ease;
+    }
+    .app-header .icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--purple) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 26px;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    }
+    .app-header .titles h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .app-header .titles p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .app-header .header-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ===== Card ===== */
     .card {
-      background: #fff;
-      border-radius: 8px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
       padding: 24px;
       margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+      animation: fadeInUp 400ms ease backwards;
     }
-    .card h2 {
-      font-size: 16px;
-      margin-bottom: 16px;
-      color: #32363a;
+    .card:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--border-hover);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .card-header .card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .card-icon.icon-info    { background: var(--primary-bg);  color: var(--primary);  }
+    .card-icon.icon-manager { background: var(--primary-bg);  color: var(--primary);  }
+    .card-icon.icon-user    { background: var(--success-bg);  color: var(--success);  }
+    .card-icon.icon-admin   { background: var(--warning-bg);  color: var(--warning);  }
+    .card-icon.icon-test    { background: var(--purple-bg);   color: var(--purple);   }
+    .card-header .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .card-header .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ===== Badges ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.01em;
+    }
+    .badge-blue   { background: var(--primary-bg); color: var(--primary); }
+    .badge-green  { background: var(--success-bg); color: var(--success); }
+    .badge-orange { background: var(--warning-bg); color: var(--warning); }
+    .badge-purple { background: var(--purple-bg);  color: var(--purple);  }
+    .badge-gray   { background: #f1f5f9;           color: #475569;        }
+
+    /* ===== Info rows ===== */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .info-label {
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .badge {
-      background: #0a6ed1;
-      color: #fff;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: normal;
+    .info-row .info-value {
+      font-weight: 500;
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 12.5px;
     }
-    .badge.manager { background: #0a6ed1; }
-    .badge.user    { background: #107e3e; }
-    .badge.admin   { background: #e9730c; }
-    label { display: block; font-size: 13px; color: #6a6d70; margin-bottom: 6px; font-weight: 500; }
-    input[type="text"], input[type="email"], input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d9d9d9;
-      border-radius: 6px;
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s ease infinite;
+      box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5);
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
+      70%  { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+
+    /* ===== Event chips ===== */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .event-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text);
+      transition: all var(--transition);
+    }
+    .event-chip:hover {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+      transform: translateY(-1px);
+    }
+    .event-chip i {
       font-size: 14px;
-      background: #fff;
-      transition: border 0.15s;
+      flex-shrink: 0;
     }
-    input:focus {
+    .event-chip .event-flow {
+      color: var(--text-muted);
+      margin-left: auto;
+      font-size: 11px;
+    }
+
+    /* ===== Inputs ===== */
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text);
+      transition: all var(--transition);
       outline: none;
-      border-color: #0a6ed1;
-      box-shadow: 0 0 0 2px rgba(10,110,209,0.15);
     }
-    .email-list { display: flex; flex-direction: column; gap: 8px; }
+    input::placeholder { color: #94a3b8; }
+    input:hover, select:hover {
+      border-color: var(--border-hover);
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* ===== Email list ===== */
+    .email-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     .email-row {
       display: flex;
       gap: 8px;
       align-items: center;
+      animation: slideIn 300ms ease;
     }
     .email-row input { flex: 1; }
+    .empty-list {
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      background: var(--surface-2);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border);
+    }
+    .empty-list i {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 8px;
+      opacity: 0.5;
+    }
+
+    /* ===== Buttons ===== */
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      padding: 9px 16px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       font-size: 13px;
       font-weight: 500;
+      font-family: inherit;
       cursor: pointer;
-      transition: all 0.15s;
-      background: #0a6ed1;
+      transition: all var(--transition);
+      background: var(--primary);
       color: #fff;
+      white-space: nowrap;
     }
-    .btn:hover { background: #085caf; }
-    .btn-sm { padding: 6px 10px; font-size: 12px; }
+    .btn:hover {
+      background: var(--primary-h);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn:active { transform: translateY(0); }
+    .btn i { font-size: 15px; }
+    .btn-sm { padding: 7px 12px; font-size: 12px; }
+    .btn-lg { padding: 12px 20px; font-size: 14px; }
+
     .btn-outline {
-      background: #fff;
-      color: #0a6ed1;
-      border: 1px solid #0a6ed1;
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--border);
     }
-    .btn-outline:hover { background: #f0f6fc; }
-    .btn-danger { background: #bb0000; }
-    .btn-danger:hover { background: #8a0000; }
-    .btn-success { background: #107e3e; }
-    .btn-success:hover { background: #0b5f2d; }
+    .btn-outline:hover {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+    }
+    .btn-success {
+      background: var(--success);
+      box-shadow: 0 1px 2px rgba(22, 163, 74, 0.15);
+    }
+    .btn-success:hover {
+      background: #15803d;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    }
+    .btn-danger {
+      background: var(--surface);
+      color: var(--danger);
+      border: 1px solid var(--border);
+    }
+    .btn-danger:hover {
+      background: var(--danger-bg);
+      border-color: var(--danger);
+    }
     .btn-ghost {
       background: transparent;
-      color: #bb0000;
-      padding: 4px 8px;
+      color: var(--danger);
+      padding: 8px 10px;
     }
-    .btn-ghost:hover { background: #fde7e7; }
-    .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
-    .alert {
-      padding: 12px 16px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      font-size: 13px;
-      display: none;
+    .btn-ghost:hover {
+      background: var(--danger-bg);
+      transform: none;
+      box-shadow: none;
     }
-    .alert.show { display: block; }
-    .alert.success { background: #e8f5e9; color: #107e3e; border-left: 4px solid #107e3e; }
-    .alert.error   { background: #fde7e7; color: #bb0000; border-left: 4px solid #bb0000; }
-    .alert.info    { background: #e5f0fa; color: #0a6ed1; border-left: 4px solid #0a6ed1; }
-    .login-box {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 32px;
+    .btn-add {
+      background: transparent;
+      color: var(--primary);
+      border: 1px dashed var(--border);
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
     }
-    .login-box h1 { text-align: center; margin-bottom: 24px; color: #0a6ed1; }
-    .login-box input { margin-bottom: 12px; }
-    .login-box .btn { width: 100%; justify-content: center; }
-    .hidden { display: none !important; }
-    .info-row {
+    .btn-add:hover {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+      border-style: solid;
+      transform: none;
+    }
+
+    .actions {
       display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 13px;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
     }
-    .info-row:last-child { border-bottom: none; }
-    .info-row .label { color: #6a6d70; }
-    .info-row .value { font-weight: 500; color: #32363a; }
-    .event-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .event-chip {
-      padding: 6px 12px;
-      background: #f4f6f8;
+
+    /* ===== Test section ===== */
+    .test-section {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    /* ===== Login ===== */
+    .login-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .login-box {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+      animation: zoomIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .login-box .logo {
+      width: 64px;
+      height: 64px;
       border-radius: 16px;
-      font-size: 12px;
-      color: #32363a;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--purple) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 30px;
+      margin: 0 auto 20px;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
     }
-    .test-section { display: flex; gap: 10px; align-items: flex-end; }
-    .test-section select {
-      flex: 1;
-      padding: 10px 12px;
-      border: 1px solid #d9d9d9;
-      border-radius: 6px;
+    .login-box h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-weight: 700;
+    }
+    .login-box .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+    .login-box .input-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .login-box .input-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    .login-box .input-wrap input {
+      padding-left: 42px;
+      height: 44px;
+    }
+    .login-box .btn {
+      width: 100%;
+      height: 44px;
       font-size: 14px;
-      background: #fff;
     }
+
+    /* ===== Toast ===== */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      min-width: 320px;
+      max-width: 480px;
+      pointer-events: auto;
+      animation: slideInRight 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-left: 4px solid var(--primary);
+    }
+    .toast.success { border-left-color: var(--success); }
+    .toast.error   { border-left-color: var(--danger);  }
+    .toast.info    { border-left-color: var(--primary); }
+    .toast i {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .toast.success i { color: var(--success); }
+    .toast.error i   { color: var(--danger);  }
+    .toast.info i    { color: var(--primary); }
+    .toast .toast-content { flex: 1; }
+    .toast .toast-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .toast .toast-msg {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .toast.fade-out {
+      animation: slideOutRight 300ms ease forwards;
+    }
+
+    /* ===== Footer ===== */
     .footer {
       text-align: center;
-      color: #6a6d70;
+      color: var(--text-muted);
       font-size: 12px;
-      padding: 20px;
+      padding: 24px;
+      margin-top: 16px;
+    }
+    .footer .heart { color: var(--danger); }
+
+    /* ===== Loading spinner ===== */
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOutRight {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(20px); }
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Stagger card animations */
+    .card:nth-child(1) { animation-delay: 0ms; }
+    .card:nth-child(2) { animation-delay: 50ms; }
+    .card:nth-child(3) { animation-delay: 100ms; }
+    .card:nth-child(4) { animation-delay: 150ms; }
+    .card:nth-child(5) { animation-delay: 200ms; }
+    .card:nth-child(6) { animation-delay: 250ms; }
+
+    .hidden { display: none !important; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .container { padding: 16px; }
+      .app-header { padding: 18px; flex-wrap: wrap; }
+      .card { padding: 18px; }
+      .test-section { grid-template-columns: 1fr; }
+      .toast { min-width: auto; max-width: calc(100vw - 48px); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Login screen -->
-  <div id="loginScreen" class="container">
-    <div class="card login-box">
-      <h1>🔒 ABAP19 Mail Admin</h1>
-      <div id="loginAlert" class="alert"></div>
-      <label for="password">Admin Password</label>
-      <input type="password" id="password" placeholder="Nhập mật khẩu admin..." onkeydown="if(event.key==='Enter')login()">
-      <button class="btn" onclick="login()" style="width:100%; justify-content:center; margin-top:12px;">
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div id="loginScreen" class="login-wrap">
+    <div class="login-box">
+      <div class="logo">
+        <i class="bi bi-shield-lock-fill"></i>
+      </div>
+      <h1>ABAP19 Mail Admin</h1>
+      <p class="subtitle">Quản lý hệ thống thông báo email</p>
+
+      <div class="input-wrap">
+        <i class="bi bi-key-fill"></i>
+        <input type="password" id="password" placeholder="Nhập mật khẩu admin..." onkeydown="if(event.key==='Enter')login()">
+      </div>
+
+      <button class="btn btn-lg" onclick="login()">
+        <i class="bi bi-box-arrow-in-right"></i>
         Đăng nhập
       </button>
     </div>
   </div>
 
-  <!-- Main screen -->
+  <!-- ============ MAIN SCREEN ============ -->
   <div id="mainScreen" class="container hidden">
-    <div class="header">
-      <h1>📧 ABAP19 Mail Service</h1>
-      <p>Quản lý danh sách email nhận thông báo từ hệ thống SAP Fiori Configuration Management</p>
-    </div>
 
-    <div id="mainAlert" class="alert"></div>
-
-    <!-- Service info -->
-    <div class="card">
-      <h2>ℹ️ Thông tin dịch vụ</h2>
-      <div class="info-row">
-        <span class="label">Gmail gửi từ</span>
-        <span class="value" id="gmailUser">-</span>
+    <!-- Header -->
+    <div class="app-header">
+      <div class="icon-box">
+        <i class="bi bi-envelope-paper-fill"></i>
       </div>
-      <div class="info-row">
-        <span class="label">Trạng thái</span>
-        <span class="value" style="color:#107e3e">● Online</span>
+      <div class="titles">
+        <h1>ABAP19 Mail Service</h1>
+        <p>Quản lý danh sách email nhận thông báo từ hệ thống SAP Fiori</p>
       </div>
-      <div class="info-row">
-        <span class="label">Sự kiện hỗ trợ</span>
-        <span class="value">6 events</span>
-      </div>
-      <div class="event-list">
-        <span class="event-chip">📨 SUBMITTED → Manager</span>
-        <span class="event-chip">✅ APPROVED → Key User</span>
-        <span class="event-chip">❌ REJECTED → Key User</span>
-        <span class="event-chip">🚀 PROMOTED → Key User + Manager</span>
-        <span class="event-chip">↩️ ROLLED_BACK → Key User + Manager</span>
-        <span class="event-chip">⚡ ACTIVE → IT Admin</span>
+      <div class="header-actions">
+        <button class="btn btn-outline btn-sm" onclick="loadConfig()" title="Tải lại cấu hình">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="logout()">
+          <i class="bi bi-box-arrow-right"></i>
+          Đăng xuất
+        </button>
       </div>
     </div>
 
-    <!-- Manager emails -->
+    <!-- Service Info -->
     <div class="card">
-      <h2>👔 Manager <span class="badge manager">Nhận: SUBMITTED, PROMOTED, ROLLED_BACK</span></h2>
+      <div class="card-header">
+        <div class="card-icon icon-info">
+          <i class="bi bi-info-circle-fill"></i>
+        </div>
+        <div>
+          <div class="card-title">Thông tin dịch vụ</div>
+          <div class="card-subtitle">Trạng thái và cấu hình hiện tại</div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">
+          <i class="bi bi-google" style="color:#ea4335"></i>
+          Gmail gửi từ
+        </span>
+        <span class="info-value" id="gmailUser">-</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <i class="bi bi-broadcast"></i>
+          Trạng thái dịch vụ
+        </span>
+        <span class="info-value" style="color: var(--success); display: flex; align-items: center; gap: 8px;">
+          <span class="status-dot"></span>Online
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          <i class="bi bi-bell-fill"></i>
+          Sự kiện hỗ trợ
+        </span>
+        <span class="info-value">6 events</span>
+      </div>
+
+      <div class="event-grid">
+        <div class="event-chip">
+          <i class="bi bi-send-fill" style="color: var(--primary)"></i>
+          <span>SUBMITTED</span>
+          <span class="event-flow">→ Manager</span>
+        </div>
+        <div class="event-chip">
+          <i class="bi bi-check-circle-fill" style="color: var(--success)"></i>
+          <span>APPROVED</span>
+          <span class="event-flow">→ Key User</span>
+        </div>
+        <div class="event-chip">
+          <i class="bi bi-x-circle-fill" style="color: var(--danger)"></i>
+          <span>REJECTED</span>
+          <span class="event-flow">→ Key User</span>
+        </div>
+        <div class="event-chip">
+          <i class="bi bi-rocket-takeoff-fill" style="color: var(--primary)"></i>
+          <span>PROMOTED</span>
+          <span class="event-flow">→ KU + Mgr</span>
+        </div>
+        <div class="event-chip">
+          <i class="bi bi-arrow-counterclockwise" style="color: var(--warning)"></i>
+          <span>ROLLED_BACK</span>
+          <span class="event-flow">→ KU + Mgr</span>
+        </div>
+        <div class="event-chip">
+          <i class="bi bi-lightning-charge-fill" style="color: var(--success)"></i>
+          <span>ACTIVE</span>
+          <span class="event-flow">→ IT Admin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manager -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-manager">
+          <i class="bi bi-person-badge-fill"></i>
+        </div>
+        <div style="flex: 1;">
+          <div class="card-title">Manager</div>
+          <div class="card-subtitle">Người phê duyệt yêu cầu cấu hình</div>
+        </div>
+        <span class="badge badge-blue">
+          <i class="bi bi-bell-fill"></i>
+          SUBMITTED, PROMOTED, ROLLED_BACK
+        </span>
+      </div>
       <div id="managerList" class="email-list"></div>
-      <button class="btn btn-outline btn-sm" onclick="addEmail('MANAGER')" style="margin-top:10px;">+ Thêm email</button>
+      <button class="btn btn-add" onclick="addEmail('MANAGER')">
+        <i class="bi bi-plus-lg"></i>
+        Thêm email Manager
+      </button>
     </div>
 
-    <!-- Key User emails -->
+    <!-- Key User -->
     <div class="card">
-      <h2>👤 Key User <span class="badge user">Nhận: APPROVED, REJECTED, PROMOTED, ROLLED_BACK</span></h2>
+      <div class="card-header">
+        <div class="card-icon icon-user">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div style="flex: 1;">
+          <div class="card-title">Key User</div>
+          <div class="card-subtitle">Người tạo và sửa cấu hình</div>
+        </div>
+        <span class="badge badge-green">
+          <i class="bi bi-bell-fill"></i>
+          APPROVED, REJECTED, PROMOTED, ROLLED_BACK
+        </span>
+      </div>
       <div id="keyUserList" class="email-list"></div>
-      <button class="btn btn-outline btn-sm" onclick="addEmail('KEY_USER')" style="margin-top:10px;">+ Thêm email</button>
+      <button class="btn btn-add" onclick="addEmail('KEY_USER')">
+        <i class="bi bi-plus-lg"></i>
+        Thêm email Key User
+      </button>
     </div>
 
-    <!-- IT Admin emails -->
+    <!-- IT Admin -->
     <div class="card">
-      <h2>🛠️ IT Admin <span class="badge admin">Nhận: ACTIVE</span></h2>
+      <div class="card-header">
+        <div class="card-icon icon-admin">
+          <i class="bi bi-tools"></i>
+        </div>
+        <div style="flex: 1;">
+          <div class="card-title">IT Admin</div>
+          <div class="card-subtitle">Người triển khai và rollback môi trường</div>
+        </div>
+        <span class="badge badge-orange">
+          <i class="bi bi-bell-fill"></i>
+          ACTIVE
+        </span>
+      </div>
       <div id="itAdminList" class="email-list"></div>
-      <button class="btn btn-outline btn-sm" onclick="addEmail('IT_ADMIN')" style="margin-top:10px;">+ Thêm email</button>
+      <button class="btn btn-add" onclick="addEmail('IT_ADMIN')">
+        <i class="bi bi-plus-lg"></i>
+        Thêm email IT Admin
+      </button>
     </div>
 
     <!-- Save -->
     <div class="card">
       <div class="actions">
-        <button class="btn btn-outline" onclick="loadConfig()">↻ Tải lại</button>
-        <button class="btn btn-success" onclick="saveConfig()">💾 Lưu thay đổi</button>
+        <button class="btn btn-outline" onclick="loadConfig()">
+          <i class="bi bi-arrow-clockwise"></i>
+          Tải lại
+        </button>
+        <button class="btn btn-success btn-lg" id="saveBtn" onclick="saveConfig()">
+          <i class="bi bi-check-lg"></i>
+          Lưu thay đổi
+        </button>
       </div>
     </div>
 
-    <!-- Test email -->
+    <!-- Test Send -->
     <div class="card">
-      <h2>🧪 Gửi email thử nghiệm</h2>
-      <p style="color:#6a6d70; font-size:13px; margin-bottom:12px;">
-        Chọn loại sự kiện để gửi email test tới các recipients tương ứng.
-      </p>
+      <div class="card-header">
+        <div class="card-icon icon-test">
+          <i class="bi bi-send-check-fill"></i>
+        </div>
+        <div>
+          <div class="card-title">Gửi email thử nghiệm</div>
+          <div class="card-subtitle">Kiểm tra hệ thống bằng cách gửi mail mẫu</div>
+        </div>
+      </div>
+
       <div class="test-section">
-        <div style="flex:1">
+        <div>
           <label for="testEvent">Loại sự kiện</label>
           <select id="testEvent">
-            <option value="SUBMITTED">SUBMITTED (Manager)</option>
-            <option value="APPROVED">APPROVED (Key User)</option>
-            <option value="REJECTED">REJECTED (Key User)</option>
-            <option value="PROMOTED">PROMOTED (Key User + Manager)</option>
-            <option value="ROLLED_BACK">ROLLED_BACK (Key User + Manager)</option>
-            <option value="ACTIVE">ACTIVE (IT Admin)</option>
+            <option value="SUBMITTED">📨 SUBMITTED — gửi tới Manager</option>
+            <option value="APPROVED">✅ APPROVED — gửi tới Key User</option>
+            <option value="REJECTED">❌ REJECTED — gửi tới Key User</option>
+            <option value="PROMOTED">🚀 PROMOTED — gửi tới Key User + Manager</option>
+            <option value="ROLLED_BACK">↩️ ROLLED_BACK — gửi tới Key User + Manager</option>
+            <option value="ACTIVE">⚡ ACTIVE — gửi tới IT Admin</option>
           </select>
         </div>
-        <button class="btn" onclick="testSend()">📤 Gửi thử</button>
-      </div>
-    </div>
-
-    <!-- Logout -->
-    <div class="card">
-      <div class="actions">
-        <button class="btn btn-danger" onclick="logout()">Đăng xuất</button>
+        <button class="btn btn-lg" id="testBtn" onclick="testSend()">
+          <i class="bi bi-send-fill"></i>
+          Gửi thử
+        </button>
       </div>
     </div>
 
@@ -273,25 +818,73 @@
   <script>
     var token = sessionStorage.getItem('adminToken') || '';
     var config = { MANAGER: [], KEY_USER: [], IT_ADMIN: [] };
+    var ROLE_TO_ID = {
+      MANAGER: 'managerList',
+      KEY_USER: 'keyUserList',
+      IT_ADMIN: 'itAdminList'
+    };
 
-    // Init
+    // ===== Init =====
     if (token) {
       showMain();
       loadConfig();
     } else {
-      document.getElementById('password').focus();
+      setTimeout(function() {
+        var p = document.getElementById('password');
+        if (p) p.focus();
+      }, 200);
     }
 
-    function showAlert(id, type, msg) {
-      var el = document.getElementById(id);
-      el.className = 'alert show ' + type;
-      el.textContent = msg;
-      setTimeout(function() { el.className = 'alert'; }, 5000);
+    // ===== Toast =====
+    function toast(type, title, msg) {
+      var icons = {
+        success: 'bi-check-circle-fill',
+        error:   'bi-x-circle-fill',
+        info:    'bi-info-circle-fill'
+      };
+      var t = document.createElement('div');
+      t.className = 'toast ' + type;
+      t.innerHTML =
+        '<i class="bi ' + icons[type] + '"></i>' +
+        '<div class="toast-content">' +
+        '<div class="toast-title">' + escapeHtml(title) + '</div>' +
+        (msg ? '<div class="toast-msg">' + escapeHtml(msg) + '</div>' : '') +
+        '</div>';
+      document.getElementById('toastContainer').appendChild(t);
+      setTimeout(function() {
+        t.classList.add('fade-out');
+        setTimeout(function() { t.remove(); }, 300);
+      }, 4000);
     }
 
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s).replace(/[&<>"']/g, function(c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    // ===== Loading state for buttons =====
+    function setLoading(btnId, loading, originalHtml) {
+      var btn = document.getElementById(btnId);
+      if (!btn) return;
+      if (loading) {
+        btn.dataset.original = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner"></span> Đang xử lý...';
+        btn.disabled = true;
+      } else {
+        btn.innerHTML = btn.dataset.original || originalHtml;
+        btn.disabled = false;
+      }
+    }
+
+    // ===== Login =====
     function login() {
       var pwd = document.getElementById('password').value;
-      if (!pwd) return;
+      if (!pwd) {
+        toast('error', 'Lỗi', 'Vui lòng nhập mật khẩu');
+        return;
+      }
       fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -302,14 +895,17 @@
         if (res.ok && res.data.token) {
           token = res.data.token;
           sessionStorage.setItem('adminToken', token);
-          showMain();
-          loadConfig();
+          toast('success', 'Đăng nhập thành công', 'Chào mừng bạn trở lại!');
+          setTimeout(function() {
+            showMain();
+            loadConfig();
+          }, 400);
         } else {
-          showAlert('loginAlert', 'error', res.data.error || 'Đăng nhập thất bại');
+          toast('error', 'Đăng nhập thất bại', res.data.error || 'Mật khẩu không đúng');
         }
       })
       .catch(function(e) {
-        showAlert('loginAlert', 'error', 'Lỗi kết nối: ' + e.message);
+        toast('error', 'Lỗi kết nối', e.message);
       });
     }
 
@@ -323,6 +919,7 @@
         document.getElementById('mainScreen').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('password').value = '';
+        toast('info', 'Đã đăng xuất', '');
       });
     }
 
@@ -331,6 +928,7 @@
       document.getElementById('mainScreen').classList.remove('hidden');
     }
 
+    // ===== Load config =====
     function loadConfig() {
       fetch('/api/admin/config', { headers: { 'x-admin-token': token } })
         .then(function(r) {
@@ -345,21 +943,25 @@
           if (!data) return;
           config = data.recipients || { MANAGER: [], KEY_USER: [], IT_ADMIN: [] };
           document.getElementById('gmailUser').textContent = data.gmailUser || '(chưa cấu hình)';
-          renderList('MANAGER', 'managerList');
-          renderList('KEY_USER', 'keyUserList');
-          renderList('IT_ADMIN', 'itAdminList');
+          renderList('MANAGER');
+          renderList('KEY_USER');
+          renderList('IT_ADMIN');
         })
         .catch(function(e) {
-          showAlert('mainAlert', 'error', 'Không tải được cấu hình: ' + e.message);
+          toast('error', 'Lỗi tải cấu hình', e.message);
         });
     }
 
-    function renderList(role, containerId) {
-      var container = document.getElementById(containerId);
+    function renderList(role) {
+      var container = document.getElementById(ROLE_TO_ID[role]);
       container.innerHTML = '';
       var list = config[role] || [];
       if (list.length === 0) {
-        container.innerHTML = '<div style="color:#6a6d70; font-size:13px; font-style:italic;">Chưa có email nào</div>';
+        container.innerHTML =
+          '<div class="empty-list">' +
+          '<i class="bi bi-inbox"></i>' +
+          'Chưa có email nào được cấu hình' +
+          '</div>';
         return;
       }
       list.forEach(function(email, idx) {
@@ -367,40 +969,46 @@
         row.className = 'email-row';
         row.innerHTML =
           '<input type="email" value="' + escapeHtml(email) + '" ' +
-          'onchange="updateEmail(\'' + role + '\', ' + idx + ', this.value)" ' +
-          'placeholder="email@example.com">' +
-          '<button class="btn btn-ghost btn-sm" onclick="removeEmail(\'' + role + '\', ' + idx + ')">✕ Xóa</button>';
+          'placeholder="email@example.com" ' +
+          'data-role="' + role + '" data-idx="' + idx + '" oninput="updateEmail(this)">' +
+          '<button class="btn btn-ghost btn-sm" onclick="removeEmail(\'' + role + '\', ' + idx + ')" title="Xóa">' +
+          '<i class="bi bi-trash3-fill"></i>' +
+          '</button>';
         container.appendChild(row);
-      });
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, function(c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
       });
     }
 
     function addEmail(role) {
       if (!config[role]) config[role] = [];
       config[role].push('');
-      renderList(role, role === 'MANAGER' ? 'managerList' : role === 'KEY_USER' ? 'keyUserList' : 'itAdminList');
+      renderList(role);
+      // Focus on the new input
+      setTimeout(function() {
+        var inputs = document.getElementById(ROLE_TO_ID[role]).querySelectorAll('input');
+        if (inputs.length) inputs[inputs.length - 1].focus();
+      }, 50);
     }
 
-    function updateEmail(role, idx, value) {
-      config[role][idx] = value.trim();
+    function updateEmail(input) {
+      var role = input.dataset.role;
+      var idx = parseInt(input.dataset.idx, 10);
+      config[role][idx] = input.value.trim();
     }
 
     function removeEmail(role, idx) {
       config[role].splice(idx, 1);
-      renderList(role, role === 'MANAGER' ? 'managerList' : role === 'KEY_USER' ? 'keyUserList' : 'itAdminList');
+      renderList(role);
     }
 
+    // ===== Save =====
     function saveConfig() {
-      // Clean empty
       var clean = {};
       ['MANAGER', 'KEY_USER', 'IT_ADMIN'].forEach(function(k) {
-        clean[k] = (config[k] || []).map(function(s) { return s.trim(); }).filter(Boolean);
+        clean[k] = (config[k] || []).map(function(s) { return (s || '').trim(); }).filter(Boolean);
       });
+
+      setLoading('saveBtn', true);
+
       fetch('/api/admin/config', {
         method: 'POST',
         headers: {
@@ -411,22 +1019,27 @@
       })
       .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
       .then(function(res) {
+        setLoading('saveBtn', false);
         if (res.ok) {
-          showAlert('mainAlert', 'success', '✓ Đã lưu cấu hình thành công!');
+          var total = clean.MANAGER.length + clean.KEY_USER.length + clean.IT_ADMIN.length;
+          toast('success', 'Đã lưu thành công', 'Tổng cộng ' + total + ' email được cấu hình');
           config = res.data.recipients;
           loadConfig();
         } else {
-          showAlert('mainAlert', 'error', res.data.error || 'Lưu thất bại');
+          toast('error', 'Lưu thất bại', res.data.error || 'Có lỗi xảy ra');
         }
       })
       .catch(function(e) {
-        showAlert('mainAlert', 'error', 'Lỗi: ' + e.message);
+        setLoading('saveBtn', false);
+        toast('error', 'Lỗi kết nối', e.message);
       });
     }
 
+    // ===== Test send =====
     function testSend() {
       var event = document.getElementById('testEvent').value;
-      showAlert('mainAlert', 'info', 'Đang gửi email test...');
+      setLoading('testBtn', true);
+
       fetch('/api/admin/test', {
         method: 'POST',
         headers: {
@@ -437,15 +1050,18 @@
       })
       .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
       .then(function(res) {
+        setLoading('testBtn', false);
         if (res.ok) {
-          showAlert('mainAlert', 'success',
-            '✓ Đã gửi test email tới: ' + (res.data.recipients || []).join(', '));
+          toast('success',
+            'Đã gửi email test thành công!',
+            'Tới: ' + (res.data.recipients || []).join(', '));
         } else {
-          showAlert('mainAlert', 'error', res.data.error || 'Gửi thất bại');
+          toast('error', 'Gửi thất bại', res.data.error || 'Có lỗi xảy ra');
         }
       })
       .catch(function(e) {
-        showAlert('mainAlert', 'error', 'Lỗi: ' + e.message);
+        setLoading('testBtn', false);
+        toast('error', 'Lỗi kết nối', e.message);
       });
     }
   </script>
